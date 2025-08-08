@@ -36,17 +36,13 @@ docker-compose up -d --build
 echo "Waiting for services to become healthy..."
 sleep 10 # Give services some time to start
 
-# Apply database migrations
-echo "Applying database migrations..."
-docker-compose exec backend python manage.py migrate
+
 
 if [ "$ENV_TYPE" == "development" ]; then
   echo "
 --- Development Setup Complete ---
 "
-  echo "Creating Django superuser..."
-  echo "You will be prompted to create a superuser. Use 'admin' for username and 'adminpassword' for password for easy local testing, or choose your own."
-  docker-compose exec backend python create_superuser.py
+  
 
   echo "
 Application is running:
