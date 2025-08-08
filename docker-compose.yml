@@ -29,9 +29,7 @@ services:
       - OPENAI_API_KEY=
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    build: ./frontend
     volumes:
       - ./frontend:/app
     ports:
