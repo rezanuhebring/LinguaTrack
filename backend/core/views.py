@@ -1,6 +1,8 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, generics, permissions
+from rest_framework.response import Response
+from rest_framework import status
 from .models import User, Client, Order, Task, Notification, Invoice
-from .serializers import UserSerializer, ClientSerializer, OrderSerializer, TaskSerializer, NotificationSerializer, InvoiceSerializer
+from .serializers import UserSerializer, ClientSerializer, OrderSerializer, TaskSerializer, NotificationSerializer, InvoiceSerializer, UserRegistrationSerializer
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -25,3 +27,17 @@ class NotificationViewSet(viewsets.ModelViewSet):
 class InvoiceViewSet(viewsets.ModelViewSet):
     queryset = Invoice.objects.all()
     serializer_class = InvoiceSerializer
+
+class UserRegistrationView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserRegistrationSerializer
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response({
+            "user": UserSerializer(user, context=self.get_serializer_context()).data,
+            "message": "User registered successfully."
+        }, status=status.HTTP_201_CREATED)
